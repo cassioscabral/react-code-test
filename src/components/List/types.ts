@@ -3,6 +3,7 @@ export interface ListOnChangeItem<T> {
   item?: T
   selected?: boolean
   arr?: T[]
+  selectedIndexes?: number[]
 }
 export interface ListProps<T> {
   data: T[]

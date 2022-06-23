@@ -12,47 +12,25 @@ type ListItem = {
 }
 
 function App() {
-  const [selected, setSelected] = useState<Set<number>>(new Set([]))
-  const handleSelectedOnChange = ({ index } : ListOnChangeItem<ListItem>): void => {
-    return setSelected((prevItems: Set<number>) => {
-      const newSet = new Set(prevItems)
-      if (newSet.has(index)) {
-        newSet.delete(index)
-        return newSet
-      }
-      return newSet.add(index)
-    })
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([])
+
+  const handleSelectedOnChange = ({ selectedIndexes }: ListOnChangeItem<ListItem>): void => {
+    selectedIndexes && setSelectedIndexes(selectedIndexes)
   }
 
   return (
     <div className='App'>
       <header className='App-header'>
-        <div className='selected-items'>{Array.from(selected).join(', ')}</div>
+        <div className='selected-items'>{selectedIndexes.join(', ')}</div>
       </header>
       <div className='flex'>
         <div className='flex-col items-center'>
           <List<ListItem>
             data={messyData}
-            renderer={(item: ListItem, index: number) => (
-              <input
-                type='checkbox'
-                onChange={(e) => handleSelectedOnChange({ index, selected: e.target.checked })}
-                name={item.name ?? `no-name-${index}`}
-                key={index}
-                checked={selected.has(index)}
-              />
-            )}
-          />
-        </div>
-        <div className='flex-col items-center'>
-          <List<ListItem>
-            data={messyData}
             onChangeItem={handleSelectedOnChange}
             renderer={(item: ListItem, index: number) => (
-              <div
-                className='list-item'
-                key={index}
-              >
+              <div className='list-item'
+                key={index}>
                 {item.name}
               </div>
             )}
