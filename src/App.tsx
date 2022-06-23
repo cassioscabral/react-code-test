@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import List from './components/List'
+import { ListOnChangeItem } from './components/List/types'
 import messyData from './data/json-generated-no-id-mess-data.json'
 
 type ListItem = {
@@ -12,8 +13,7 @@ type ListItem = {
 
 function App() {
   const [selected, setSelected] = useState<Set<number>>(new Set([]))
-
-  const handleSelectedOnChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
+  const handleSelectedOnChange = ({ index } : ListOnChangeItem<ListItem>): void => {
     return setSelected((prevItems: Set<number>) => {
       const newSet = new Set(prevItems)
       if (newSet.has(index)) {
@@ -36,7 +36,7 @@ function App() {
             renderer={(item: ListItem, index: number) => (
               <input
                 type='checkbox'
-                onChange={(e) => handleSelectedOnChange(e, index)}
+                onChange={(e) => handleSelectedOnChange({ index, selected: e.target.checked })}
                 name={item.name ?? `no-name-${index}`}
                 key={index}
                 checked={selected.has(index)}
@@ -47,8 +47,12 @@ function App() {
         <div className='flex-col items-center'>
           <List<ListItem>
             data={messyData}
+            onChangeItem={handleSelectedOnChange}
             renderer={(item: ListItem, index: number) => (
-              <div className='list-item' key={index}>
+              <div
+                className='list-item'
+                key={index}
+              >
                 {item.name}
               </div>
             )}
