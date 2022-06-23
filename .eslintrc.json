@@ -28,7 +28,9 @@
       "camelcase": "error",
       "spaced-comment": "error",
       "quotes": ["error", "single"],
-      "no-duplicate-imports": "error"
+      "no-duplicate-imports": "error",
+      "react/jsx-max-props-per-line": 1,
+      "react/jsx-indent-props": [2, 2]
     },
     "settings": {
       "import/resolver": {
