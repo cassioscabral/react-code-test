@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { ListProps,  ListOnChangeItem } from './types'
+import { ListProps, ListOnChangeItem } from './types'
+import { MemoizedListItem } from '../ListItem'
 
 function List<T>(props: ListProps<T>): JSX.Element {
   // track selected items by a Set of indexes
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set([]))
 
-  const checkboxOnChangeHander = ({ index, item, selected, arr }: ListOnChangeItem<T>) => {
+  const onChangeItemHandler = ({ index, item, selected, arr }: ListOnChangeItem<T>): void => {
     setSelectedItems((prevItems: Set<number>): Set<number> => {
       const newSet = new Set(prevItems)
       if (newSet.has(index)) {
@@ -18,23 +19,29 @@ function List<T>(props: ListProps<T>): JSX.Element {
       }
       return newSet
     })
-
   }
+
   return (
     <div className='flex'>
-      <div className='select-column flex-col'>
-        {props.data.map((item: T, index: number) => {
-          return (
-            <input
-              type='checkbox'
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => checkboxOnChangeHander({ index, selected: e.target.checked, item, arr: props.data })}
-              key={index}
-              checked={selectedItems.has(index)}
-            />
-          )
-        })}
-      </div>
-      <div className='list-column flex-col'>{props.data.map(props.renderer)}</div>
+      <div className='flex-col'>{props.data.map((item: T, index: number) => {
+    return (
+      <MemoizedListItem
+        selected={selectedItems.has(index)}
+        onChangeItem={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChangeItemHandler({
+            index,
+            item,
+            selected: e.target.checked,
+            arr: props.data,
+          })
+        }
+        id={index}
+        key={index}
+      >
+        {props.renderer(item, index, props.data)}
+      </MemoizedListItem>
+    )
+  })}</div>
     </div>
   )
 }

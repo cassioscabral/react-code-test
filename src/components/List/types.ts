@@ -1,3 +1,4 @@
+export type ListOnChangeItemFn<T> = (args: ListOnChangeItem<T>) => void
 export interface ListOnChangeItem<T> {
   index: number
   item?: T
@@ -7,6 +8,6 @@ export interface ListOnChangeItem<T> {
 }
 export interface ListProps<T> {
   data: T[]
-  onChangeItem?: (args: ListOnChangeItem<T>) => void
+  onChangeItem?: ListOnChangeItemFn<T>
   renderer: (item: T, index: number, arr: T[]) => JSX.Element
 }

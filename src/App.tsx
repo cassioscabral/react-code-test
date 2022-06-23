@@ -21,7 +21,7 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <div className='selected-items'>{selectedIndexes.join(', ')}</div>
+        <div className='selected-items'>Selected items: {selectedIndexes.join(', ')}</div>
       </header>
       <div className='flex'>
         <div className='flex-col items-center'>
@@ -29,11 +29,13 @@ function App() {
             data={messyData}
             onChangeItem={handleSelectedOnChange}
             renderer={(item: ListItem, index: number) => (
-              <div className='list-item'
-                key={index}>
-                {item.name}
-              </div>
-            )}
+                <div
+                  className='list-item'
+                  key={index}>
+                  {item.name}
+                </div>
+              )
+           }
           />
         </div>
       </div>
