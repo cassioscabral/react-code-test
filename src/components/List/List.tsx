@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ListProps } from './types'
 import { MemoizedItem, OnSelectHandler } from './Item'
 
 export default function List<T>(props: ListProps<T>): JSX.Element {
   // track selected items by a Set of indexes
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set([]))
+
+  useEffect(() => {
+    props.onChange(Array.from(selectedItems))
+  }, [selectedItems])
 
   const onSelectHandler: OnSelectHandler = (index, selected) => {
     setSelectedItems((prevItems) => {
@@ -14,9 +18,6 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
         newSet.add(index)
       } else {
         newSet.delete(index)
-      }
-      if (props.onChange) {
-        props.onChange(Array.from(newSet))
       }
       return newSet
     })
