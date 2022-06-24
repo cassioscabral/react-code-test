@@ -1,13 +1,8 @@
-export type ListOnChangeItemFn<T> = (args: ListOnChangeItem<T>) => void
-export interface ListOnChangeItem<T> {
-  index: number
-  item?: T
-  selected?: boolean
-  arr?: T[]
-  selectedIndexes?: number[]
-}
+export type ItemRenderer<T> = (item: T, index: number) => JSX.Element
+export type OnChangeHandler = (indexList: number[]) => void
+
 export interface ListProps<T> {
   data: T[]
-  onChangeItem?: ListOnChangeItemFn<T>
-  renderer: (item: T, index: number, arr: T[]) => JSX.Element
+  onChange: OnChangeHandler
+  renderer: ItemRenderer<T>
 }

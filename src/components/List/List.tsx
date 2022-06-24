@@ -1,49 +1,42 @@
-import React, { useState } from 'react'
-import { ListProps, ListOnChangeItem } from './types'
-import { MemoizedListItem } from '../ListItem'
+import { useState } from 'react'
+import { ListProps } from './types'
+import { MemoizedItem, OnSelectHandler } from './Item'
 
-function List<T>(props: ListProps<T>): JSX.Element {
+export default function List<T>(props: ListProps<T>): JSX.Element {
   // track selected items by a Set of indexes
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set([]))
 
-  const onChangeItemHandler = ({ index, item, selected, arr }: ListOnChangeItem<T>): void => {
-    setSelectedItems((prevItems: Set<number>): Set<number> => {
+  const onSelectHandler: OnSelectHandler = (index, selected) => {
+    setSelectedItems((prevItems) => {
       const newSet = new Set(prevItems)
-      if (newSet.has(index)) {
-        newSet.delete(index)
-      } else {
+
+      if (selected) {
         newSet.add(index)
+      } else {
+        newSet.delete(index)
       }
-      if (props.onChangeItem && typeof props.onChangeItem === 'function') {
-        props.onChangeItem({ index, selected, item, arr, selectedIndexes: Array.from(newSet) })
+      if (props.onChange) {
+        props.onChange(Array.from(newSet))
       }
       return newSet
     })
   }
 
+
   return (
-    <div className='flex'>
-      <div className='flex-col'>{props.data.map((item: T, index: number) => {
-    return (
-      <MemoizedListItem
-        selected={selectedItems.has(index)}
-        onChangeItem={(e: React.ChangeEvent<HTMLInputElement>) =>
-          onChangeItemHandler({
-            index,
-            item,
-            selected: e.target.checked,
-            arr: props.data,
-          })
-        }
-        id={index}
-        key={index}
-      >
-        {props.renderer(item, index, props.data)}
-      </MemoizedListItem>
-    )
-  })}</div>
+    <div className='flex-col'>
+      {props.data.map((item, index) => {
+        return (
+          <MemoizedItem
+            selected={selectedItems.has(index)}
+            onSelect={onSelectHandler}
+            id={index}
+            key={index}
+          >
+            {props.renderer(item, index)}
+          </MemoizedItem>
+        )
+      })}
     </div>
   )
 }
-
-export default List

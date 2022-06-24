@@ -1,46 +1,49 @@
-import React, { useState } from 'react'
+
+import { useState } from 'react'
+import List, { ItemRenderer, OnChangeHandler } from './components/List'
+import { UserInterface, listUsers } from './api/Users'
 import './App.css'
-import List from './components/List'
-import { ListOnChangeItem } from './components/List/types'
-import messyData from './data/json-generated-no-id-mess-data.json'
 
-type ListItem = {
-  name?: string
-  email?: string
-  isActive?: boolean
-  phone?: string
-}
 
-function App() {
+export default function App() {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([])
+  const users = listUsers()
 
-  const handleSelectedOnChange = ({ selectedIndexes }: ListOnChangeItem<ListItem>): void => {
-    selectedIndexes && setSelectedIndexes(selectedIndexes)
-  }
+  const onChangeHandler: OnChangeHandler = (selectedIndexes) =>
+    setSelectedIndexes(selectedIndexes)
+
+  const userRenderer: ItemRenderer<UserInterface> = (item, index) => (
+    <UserInfo index={index}
+      item={item} />
+  )
 
   return (
     <div className='App'>
-      <header className='App-header'>
-        <div className='selected-items'>Selected items: {selectedIndexes.join(', ')}</div>
-      </header>
-      <div className='flex'>
-        <div className='flex-col items-center'>
-          <List<ListItem>
-            data={messyData}
-            onChangeItem={handleSelectedOnChange}
-            renderer={(item: ListItem, index: number) => (
-                <div
-                  className='list-item'
-                  key={index}>
-                  {item.name}
-                </div>
-              )
-           }
-          />
-        </div>
+      <Header selectedIndexes={selectedIndexes} />
+
+      <div className='flex-col items-center justify-center w-full'>
+        <List<UserInterface> data={users}
+          onChange={onChangeHandler}
+          renderer={userRenderer} />
       </div>
     </div>
   )
 }
 
-export default App
+// --- Dumb components
+function Header(props: { selectedIndexes: number[] }) {
+  return (
+    <header className='App-header padding-8'>
+      <div className='selected-items'>Selected items: {props.selectedIndexes.join(', ')}</div>
+    </header>
+  )
+}
+
+function UserInfo(props: { index: number; item: UserInterface }) {
+  return (
+    <div className='list-item'
+      key={props.index}>
+      {props?.item?.name ? props.item.name : 'no name provided'}
+    </div>
+  )
+}
