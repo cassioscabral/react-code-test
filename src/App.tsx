@@ -34,14 +34,14 @@ export default function App() {
 function Header(props: { selectedIndexes: number[] }) {
   return (
     <header className='App-header padding-8'>
-      <div className='selected-items'>Selected items: {props.selectedIndexes.join(', ')}</div>
+      Selected items: {props.selectedIndexes.join(', ') || 'no items selected'}
     </header>
   )
 }
 
 function UserInfo(props: { index: number; item: UserInterface }) {
   return (
-    <div className='list-item'
+    <div className='user-info-item'
       key={props.index}>
       {props?.item?.name ? props.item.name : 'no name provided'}
     </div>
