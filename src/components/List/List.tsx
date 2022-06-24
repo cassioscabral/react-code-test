@@ -25,7 +25,7 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
 
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col space-y-4'>
       {props.data.map((item, index) => {
         return (
           <MemoizedItem

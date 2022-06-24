@@ -3,8 +3,9 @@ import { ItemProps } from './types'
 
 function Item(props: ItemProps) {
   return (
-    <div className='flex items-center space-x-2'>
+    <div className='card flex items-center space-x-2'>
       <input
+        className='h-5 w-5 border rounded-sm cursor-pointer'
         type='checkbox'
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           props.onSelect(props.id, e.target.checked)
