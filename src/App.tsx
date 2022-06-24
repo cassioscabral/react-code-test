@@ -2,8 +2,6 @@
 import { useState } from 'react'
 import List, { ItemRenderer, OnChangeHandler } from './components/List'
 import { UserInterface, listUsers } from './api/Users'
-import './App.css'
-
 
 export default function App() {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([])
@@ -21,7 +19,7 @@ export default function App() {
     <div className='App'>
       <Header selectedIndexes={selectedIndexes} />
 
-      <div className='flex-col items-center justify-center w-full'>
+      <div className='flex flex-col items-center justify-center w-full'>
         <List<UserInterface> data={users}
           onChange={onChangeHandler}
           renderer={userRenderer} />
@@ -30,10 +28,10 @@ export default function App() {
   )
 }
 
-// --- Dumb components
+// --- dummy components
 function Header(props: { selectedIndexes: number[] }) {
   return (
-    <header className='App-header padding-8'>
+    <header className='text-center my-8'>
       Selected items: {props.selectedIndexes.join(', ') || 'no items selected'}
     </header>
   )
@@ -41,7 +39,7 @@ function Header(props: { selectedIndexes: number[] }) {
 
 function UserInfo(props: { index: number; item: UserInterface }) {
   return (
-    <div className='user-info-item'
+    <div
       key={props.index}>
       {props?.item?.name ? props.item.name : 'no name provided'}
     </div>

@@ -3,7 +3,7 @@ import { ItemProps } from './types'
 
 function Item(props: ItemProps) {
   return (
-    <div className='flex'>
+    <div className='flex items-center space-x-2'>
       <input
         type='checkbox'
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
