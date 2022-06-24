@@ -4,4 +4,5 @@ export interface ItemProps {
   selected: boolean
   children: JSX.Element
   onSelect: OnSelectHandler
+  className?: string
 }

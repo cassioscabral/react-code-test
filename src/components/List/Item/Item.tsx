@@ -3,7 +3,7 @@ import { ItemProps } from './types'
 
 function Item(props: ItemProps) {
   return (
-    <div className='card flex items-center space-x-2'>
+    <div className={['card flex', props.className].join(' ')}>
       <input
         className='h-5 w-5 border rounded-sm cursor-pointer'
         type='checkbox'

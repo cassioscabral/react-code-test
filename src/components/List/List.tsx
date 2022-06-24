@@ -23,12 +23,16 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
     })
   }
 
-
   return (
-    <div className='flex flex-col space-y-4'>
+    <>
       {props.data.map((item, index) => {
         return (
           <MemoizedItem
+            className={
+              typeof props.itemClassName === 'function'
+                ? props.itemClassName(item)
+                : props.itemClassName
+            }
             selected={selectedItems.has(index)}
             onSelect={onSelectHandler}
             id={index}
@@ -38,6 +42,6 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
           </MemoizedItem>
         )
       })}
-    </div>
+    </>
   )
 }
