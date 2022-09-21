@@ -19,22 +19,20 @@
  *
  */
 import { useState } from 'react'
-import List, { ItemRenderer, OnChangeHandler } from './components/List'
+import List, { ItemRenderer } from './components/List'
 import { UserInterface, listUsers } from './api/Users'
 
 export default function App() {
   const [selectedIndexes, setSelectedIndexes] = useState<number[]>([])
-  const users = listUsers()
 
-  const onChangeHandler: OnChangeHandler = (selectedIndexes) => setSelectedIndexes(selectedIndexes)
+  const users = listUsers().map((user, index) => ({...user, id: index}))
 
-  const userRenderer: ItemRenderer<UserInterface> = (item, index) => (
-    <UserInfo index={index}
-      item={item} />
+  const userRenderer: ItemRenderer<UserInterface> = (item) => (
+    <UserInfo item={item} />
   )
 
   return (
-    <div className='App'>
+    <div className='bg-gray-100'>
       <Header selectedIndexes={selectedIndexes} />
 
       <div
@@ -42,14 +40,14 @@ export default function App() {
            items-center justify-center
            w-full space-y-4
            max-w-sm mx-auto'>
-        <List<UserInterface>
+        <List
           itemClassName={(item) => {
             const defaultItemClassName = 'w-full'
             const activeClassName = item.isActive ? 'border border-green-500' : ''
             return [defaultItemClassName, activeClassName].join(' ')
           }}
           data={users}
-          onChange={onChangeHandler}
+          onChange={setSelectedIndexes}
           renderer={userRenderer}
         />
       </div>
@@ -60,31 +58,29 @@ export default function App() {
 // --- dummy components
 function Header(props: { selectedIndexes: number[] }) {
   return (
-    <header className='text-xl text-center my-8'>
-      Selected items: {props.selectedIndexes.join(', ') || 'no items selected'}
+    <header className='text-xl text-center mb-8 pt-8'>
+      <h1>Selected items: {props.selectedIndexes.join(', ') || 'no items selected'}</h1>
     </header>
   )
 }
 
-function UserInfo(props: { index: number; item: UserInterface }) {
+function UserInfo(props: { item: UserInterface }) {
   return (
-    <div
-      className='flex ml-4 justify-between w-full'
-      key={props.index}>
+    <div className='flex ml-4 justify-between w-full'>
       <header className={props.item.name ? 'font-medium' : ''}>
-        {props?.item?.name ? props.item.name : 'no name provided'}
+        <h2>{props?.item?.name ? props.item.name : 'no name provided'}</h2>
       </header>
-      <div className='flex space-x-2'>
+      <p className='flex space-x-2'>
         {props.item.email ? <EmailLink email={props.item.email} /> : <span>No email provided</span>}
         <UserInfoActiveIcon isActive={props.item.isActive} />
-      </div>
+      </p>
     </div>
   )
 }
 
 function EmailLink(props: { email: string }) {
   return (
-    <div className='flex justify-end'>
+    <span className='flex justify-end'>
       <a
         target="_blank"
         className='underline underline-offset-1'
@@ -92,18 +88,18 @@ function EmailLink(props: { email: string }) {
         rel="noreferrer">
         Email me
       </a>
-    </div>
+    </span>
   )
 }
 
 function UserInfoActiveIcon(props: { isActive?: boolean }) {
   return props.isActive ?
-    <div
+    <span
       title='User is active'
       className='bg-green-400 rounded-full w-2 h-2 hover:motion-safe:animate-pulse'
     />
    :
-    <div
+    <span
       title='User not active'
       className='bg-gray-500 rounded-full w-2 h-2'
     />

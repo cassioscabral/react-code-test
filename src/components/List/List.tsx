@@ -1,23 +1,26 @@
-import { useState, useEffect } from 'react'
-import { ListProps } from './types'
+import { useState, useEffect, PropsWithChildren } from 'react'
+import { ListProps, WithId } from './types'
 import { MemoizedItem, OnSelectHandler } from './Item'
 
-export default function List<T>(props: ListProps<T>): JSX.Element {
+export default function List<T extends WithId>(props: PropsWithChildren<ListProps<T>>): JSX.Element {
   // track selected items by a Set of indexes
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set([]))
 
   useEffect(() => {
-    props.onChange(Array.from(selectedItems))
+    const indexList: number[] = props.data
+      .map((item, index) => selectedItems.has(item.id) ? index : null)
+      .filter(i => i !== null) as number[]
+    props.onChange(indexList ?? [])
   }, [selectedItems])
 
-  const onSelectHandler: OnSelectHandler = (index, selected) => {
+  const onSelectHandler: OnSelectHandler = (id, selected) => {
     setSelectedItems((prevItems) => {
       const newSet = new Set(prevItems)
 
       if (selected) {
-        newSet.add(index)
+        newSet.add(id)
       } else {
-        newSet.delete(index)
+        newSet.delete(id)
       }
       return newSet
     })
@@ -25,7 +28,7 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
 
   return (
     <>
-      {props.data.map((item, index) => {
+      {props.data.map((item) => {
         return (
           <MemoizedItem
             className={
@@ -33,12 +36,12 @@ export default function List<T>(props: ListProps<T>): JSX.Element {
                 ? props.itemClassName(item)
                 : props.itemClassName
             }
-            selected={selectedItems.has(index)}
+            selected={selectedItems.has(item.id)}
             onSelect={onSelectHandler}
-            id={index}
-            key={index}
+            id={item.id}
+            key={item.id}
           >
-            {props.renderer(item, index)}
+            {props.renderer(item)}
           </MemoizedItem>
         )
       })}
